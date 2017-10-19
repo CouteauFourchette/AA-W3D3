@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+# Ask the user for their email; find the User with this email.
+# You don't have to support users signing up through the CLI.
+
+puts "What's you're e-mail?"
+email = gets.chomp.to_sym
+unless User.exists?(email: email)
+  user = User.new(email: email)
+  user.save
+else
+  user = User.find_by_email(email)
+end
+
+# Give the user the option of visiting a shortened URL or
+# creating one.
+puts "Would you like to visit [1] or create [2] a Shortened URL?"
+choice = gets.chomp
+until choice =~ /[1-2]/
+  puts "Would you like to visit [1] or create [2] a Shortened URL?"
+  choice = gets.chomp
+end
+
+# When they select create a new short URL, create one and
+# show it to them.
+
+if choice == '2'
+  puts "What URL do you want to shorten?"
+  url = gets.chomp.to_sym
+
+  s_url = ShortenedUrl.create_sh_url(user, url)
+  s_url.save
+  puts "Your shorten url is #{s_url.short_url}"
+else
+  puts "What URL do you want to visit?"
+  url = gets.chomp.to_sym
+  s_url = ShortenedUrl.find_by_short_url(url)
+  Visit.record_visit!(user, s_url)
+  Launchy.open s_url.long_url
+end
+
+
+# Use the launchy gem to open a URL in the browser; record
+# a visit. (You'll need to add launchy to your Gemfile and
+#   run bundle install)
