@@ -13,3 +13,6 @@ Visit.record_visit!(users.first, short_urls.first)
 Visit.record_visit!(users.last, short_urls.first)
 Visit.record_visit!(users.last, short_urls.first)
 Visit.record_visit!(users.last, short_urls.last)
+
+tag_topics = TagTopic.create( [{ tag: 'test' }, {tag: 'test2'}])
+taggings = Tagging.create( [{ tag_id: tag_topics.first.id, url_id: short_urls.first.id }] )
